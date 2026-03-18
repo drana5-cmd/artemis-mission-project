@@ -1,0 +1,11 @@
+Model Information:
+* title:	franklin
+* source:	https://sketchfab.com/3d-models/franklin-d2ebf6db2afb4dbeaeda6a39f79ec9a3
+* author:	Tervoncuz (https://sketchfab.com/Tervon)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "franklin" (https://sketchfab.com/3d-models/franklin-d2ebf6db2afb4dbeaeda6a39f79ec9a3) by Tervoncuz (https://sketchfab.com/Tervon) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

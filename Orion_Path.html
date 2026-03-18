@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earth - Three.js</title>
+    <link rel="icon" href="http://127.0.0.1:5500/images/drawing2.png" type="image/png">
+
+
+
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Lucida, tahoma;
+            font-size: 12px;
+        }
+
+        canvas {
+            display: block;
+        }
+
+
+
+        .display-title {
+            padding: 10px;
+            text-align: center;
+            margin: 5px auto 10px 0;
+            padding: 8px 20px;
+            font-weight: bold;
+            /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
+            background: linear-gradient(to bottom, rgba(46, 79, 156, 1) 0%, rgba(30, 56, 118, 1) 100%);
+            border-radius: 5px;
+            background-image: linear-gradient(to right bottom, #052925, #063330, #073d3c, #094749, #0b5257, #09535b, #08545f, #095563, #074d5d, #064557, #063e50, #073649);
+            background: #00000066;
+            background: linear-gradient(to bottom, rgba(22, 64, 112, 1) 0%, rgba(29, 100, 159, 1) 50%, rgba(23, 89, 147, 1) 51%, rgba(18, 103, 206, 1) 100%);
+            filter: drop-shadow(1px 1px 8px #000000);
+        }
+
+        input[type="checkbox"] {
+            accent-color: #d91103;
+        }
+
+        #button-info {
+            background-image: url('./images/display.png');
+            background-size: cover;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            box-sizing: border-box;
+            height: 20%;
+
+        }
+
+        button {
+            background-image: url('./images/space2.webp');
+            background-size: cover;
+            color: yellow;
+            border: solid;
+            border-color: silver;
+            padding: 12px;
+            text-align: center;
+            border-radius: 100px;
+        }
+
+        #slider-container {
+            background-color: transparent;
+            width: 90%;
+            position: absolute;
+            margin: auto;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            z-index: 2;
+        }
+
+        #Animation-slider {
+            width: 92vw;
+            -webkit-appearance: none;
+            border-radius: 25px;
+            z-index: 2;
+
+
+        }
+
+        /* MENU CODE BELOW */
+        #display-menu-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.22) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        #logo {
+            float: right;
+            margin-right: 50px;
+            margin-top: 50px;
+            background-color: #ffffff22;
+            padding: 10px 20px;
+            border-radius: 10px;
+            width: 200px;
+        }
+
+        #display-menu {
+            position: absolute;
+            height: 40px;
+            top: 0;
+            left: 0;
+            color: #fff;
+            width: auto;
+            display: grid;
+            grid-template-columns: repeat(6, auto);
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+            justify-items: center;
+            align-items: center;
+            margin: 0 0 0 25px;
+        }
+
+        #display-menu li {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+        }
+
+        #display-menu li * {
+            vertical-align: middle;
+            margin: 0 3px;
+            padding: 0;
+            line-height: 0;
+        }
+
+        .action-button {
+            background: linear-gradient(to bottom, #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 100%;
+        }
+
+        .action-button:hover {
+            color: yellow;
+        }
+
+        #pause {
+
+            position: absolute;
+            top: 0px;
+            left: -120px;
+            padding: 15px;
+
+        }
+
+
+        /* MENU DEFAULTS */
+
+
+        #Animation-slider::-webkit-slider-thumb {
+
+            #Animation-slider::-moz-range-thumb {
+                cursor: pointer;
+                width: 70px;
+                height: 50px;
+                background: url('./images/space.jpg') no-repeat center center;
+                background-size: cover;
+                border: none;
+                /* Remove default browser border */
+            }
+        }
+
+
+        select {
+            background-image: url('./images/space2.webp');
+            padding: 5px;
+            border-radius: 5px;
+            margin-left: 10px;
+            color: white;
+            background-color: black;
+
+        }
+
+        #speed_dropdown_select {
+            padding: 5px;
+            font-size: 14px;
+            margin-left: 50px;
+            text-align: center;
+
+        }
+
+        .display {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            padding: 20px;
+            cursor: move;
+        }
+
+
+
+
+
+
+
+
+
+
+
+        .display-pop {
+            position: absolute;
+            width: 30%;
+            max-width: 300px;
+            top: 50px;
+            left: 10px;
+            display: none;
+            /* text-align: center; */
+            padding-bottom: 180px;
+            z-index: 1;
+            border-radius: 5px;
+            color: white;
+            padding: 5px 15px;
+            cursor: pointer;
+            background: linear-gradient(to bottom, #104756 0%, #176e7b 50%, #126372 51%, #1599ab 99%);
+            background: linear-gradient(to bottom, rgba(46, 79, 156, 1) 0%, rgba(30, 56, 118, 1) 100%);
+            border-radius: 8px;
+        }
+
+        .display-pop td {
+            padding: 5px 5px;
+        }
+
+        .display-pop table {
+            padding-bottom: 15px;
+            margin: 0 auto;
+        }
+
+        .display-pop:after {
+            content: ' ';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+        }
+
+
+        #on-ant-display {
+            top: 50px;
+            left: 50px;
+        }
+
+        #off-ant-display {
+            top: 300px;
+            left: 50px;
+        }
+
+        #on-Status-Display {
+            top: 300px;
+            left: 50px;
+
+        }
+
+        #Info_screen-Display {
+            top: 150px;
+            left: 1170px;
+
+        }
+
+        /*display:content reveals image*/
+        #stage-1 {
+            display: none;
+            text-align: center;
+        }
+
+        #stage-2 {
+            display: none;
+            text-align: center;
+        }
+
+        #stage-3 {
+            display: none;
+            text-align: center;
+        }
+
+        .antenna-chosen {
+            color: #8fffbf;
+        }
+
+        .antenna-chosen::after {
+            content: '✔️';
+            filter: hue-rotate(33deg) contrast(200%);
+        }
+
+        .antenna-on {
+            color: #8fffbf
+        }
+
+        .antenna-on::after {
+            content: none;
+        }
+
+        .antenna-off {
+            color: #fa4848;
+        }
+
+        .antenna-off::after {
+            content: none;
+        }
+
+
+        .smaller-desc {
+            font-size: 0.9em;
+        }
+
+        #viz {
+            font-size: 0.9em;
+            margin: 10px 15px;
+            margin-left: 25px;
+            padding: 10px;
+        }
+
+        #viz li {
+            margin: 8px 0;
+            padding: 0;
+        }
+
+        .go-right {
+            text-align: right;
+        }
+
+        #mini-map {
+            cursor: pointer;
+        }
+
+        .status-img {
+            padding: 10px 0;
+            max-width: 80%;
+            max-height: 200px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="./scripts/artemisData.js"></script>
+    <script type="module" src="./scripts/three/three.js"></script>
+    <script type="module" src="./scripts/mainAntenna.mjs"></script>
+
+    <script type="module">
+        import * as THREE from './scripts/three/three.js';
+        import { OrbitControls } from './scripts/three/OrbitControls.js';
+        import { Import_Model } from './scripts/mainAntenna.mjs';
+        import { Line } from './scripts/mainAntenna.mjs';
+        import { updatePathLine2 } from './scripts/mainAntenna.mjs';
+        import { GetLink_budget_From_int } from './scripts/mainAntenna.mjs';
+
+
+        //#region On_Load
+
+        async function Load_Scene() {
+            // Starting World START
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                3000000
+            );
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const dirLight = new THREE.DirectionalLight(0xefefff, 1.5);
+            dirLight.position.set(10, 10, 10);
+            scene.add(dirLight);
+
+
+            //#region ONLOAD
+
+            //#region SPHERES
+            const scaleFactor = 1;
+
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            const controls = new OrbitControls(camera, renderer.domElement);
+
+            // Create Earth sphere (radius 1, 32 segments)
+            const earthGeometry = new THREE.SphereGeometry(6371, 32, 32);
+            const earthTextureLoader = new THREE.TextureLoader();
+            const earthTexture = earthTextureLoader.load('./images/earthmab.jpg');
+            const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+            const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+            scene.add(earth);
+
+            // Create orion square(for now until I create mesh) 
+            const orionGeometry = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            const orionTextureLoader = new THREE.TextureLoader();
+            const orionTexture = orionTextureLoader.load('./images/earthmab.jpg');
+            const orionMaterial = new THREE.MeshBasicMaterial({ map: orionTexture });
+            let on_path_trail = new THREE.Mesh(orionGeometry);
+            scene.add(on_path_trail);
+
+            // rizz1: Creating comet techniwually the invis block or smth
+            const cometGeometry = new THREE.SphereGeometry(0, 0, 0);
+            const cometTextureLoader = new THREE.TextureLoader();
+            const cometTexture = cometTextureLoader.load('./images/pika.jpg');
+            const cometMaterial = new THREE.MeshBasicMaterial({ map: cometTexture });
+            const comet = new THREE.Mesh(cometGeometry, cometMaterial);
+            comet.position.set(10000, 1000000, 10000000);
+            scene.add(comet);
+
+
+            const off_orionGeometry = new THREE.ConeGeometry(1, 1, 1);
+            const off_orionTextureLoader = new THREE.TextureLoader();
+            const off_orionTexture = off_orionTextureLoader.load('./images/orien_geeked.jpg.webp');
+            const off_orionMaterial = new THREE.MeshBasicMaterial({ map: off_orionTexture });
+            let off_path_trail = new THREE.Mesh(off_orionGeometry, off_orionMaterial);
+            scene.add(off_path_trail);
+            // Create moon sphere (radius 1, 32 segments)
+            const moonGeometry = new THREE.SphereGeometry(5000, 32, 32);
+            const moonTextureLoader = new THREE.TextureLoader();
+            const moonTexture = moonTextureLoader.load('./images/moon.jpg');
+            const moonMaterial = new THREE.MeshBasicMaterial({ map: moonTexture });
+            const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+            scene.add(moon);
+
+            const ds54Geometry = new THREE.SphereGeometry(6371 * (scaleFactor / 10001000), 32, 32);
+            const ds54TextureLoader = new THREE.TextureLoader();
+            const ds54Texture = ds54TextureLoader.load('./images/moon.jpg');
+            const ds54Material = new THREE.MeshBasicMaterial({ map: ds54Texture });
+            const ds54 = new THREE.Mesh(ds54Geometry, ds54Material);
+            scene.add(ds54);
+
+            const ds24Geometry = new THREE.SphereGeometry(6371 * (scaleFactor / 1000), 32, 32);
+            const ds24TextureLoader = new THREE.TextureLoader();
+            const ds24Texture = ds24TextureLoader.load('./images/moon.jpg');
+            const ds24Material = new THREE.MeshBasicMaterial({ map: ds24Texture });
+            const ds24 = new THREE.Mesh(ds24Geometry, ds24Material);
+            scene.add(ds24);
+
+            const ds34Geometry = new THREE.SphereGeometry(6371 * (scaleFactor / 1000), 32, 32);
+            const ds34TextureLoader = new THREE.TextureLoader();
+            const ds34Texture = ds34TextureLoader.load('./images/moon.jpg');
+            const ds34Material = new THREE.MeshBasicMaterial({ map: ds34Texture });
+            const ds34 = new THREE.Mesh(ds34Geometry, ds34Material);
+            scene.add(ds34);
+            //#endregion SPHERES
+
+
+            //#region PHASES
+            let Phases = [0x00FF00, 0xFF0000, 0x00FFFF, 0xFFFF00]
+            let off_Phases = [0xD9EAD3, 0xF4CCCC, 0xD0E0E3, 0xFFF2CC]
+
+            const On_Phase1 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let On_Path_Phase1 = new THREE.Mesh(On_Phase1);
+            scene.add(On_Path_Phase1);
+
+
+            const On_Phase2 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let On_Path_Phase2 = new THREE.Mesh(On_Phase1);
+            scene.add(On_Path_Phase2);
+
+
+            const On_Phase3 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let On_Path_Phase3 = new THREE.Mesh(On_Phase1);
+            scene.add(On_Path_Phase3);
+
+            const On_Phase4 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let On_Path_Phase4 = new THREE.Mesh(On_Phase1);
+            scene.add(On_Path_Phase4);
+
+
+            let p1 = Line(scene, Phases[0], On_Path_Phase1, earth)
+            let pathGeometry_p1 = p1[1]
+            let connectLine_p1 = p1[0]
+
+            let p2 = Line(scene, Phases[1], On_Path_Phase2, earth)
+            let pathGeometry_p2 = p2[1]
+            let connectLine_p2 = p2[0]
+
+            let p3 = Line(scene, Phases[2], On_Path_Phase3, earth)
+            let pathGeometry_p3 = p3[1]
+            let connectLine_p3 = p3[0]
+
+            let p4 = Line(scene, Phases[3], On_Path_Phase4, earth)
+            let pathGeometry_p4 = p4[1]
+            let connectLine_p4 = p4[0]
+
+
+            const off_On_Phase1 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_On_Path_Phase1 = new THREE.Mesh(off_On_Phase1);
+            scene.add(off_On_Path_Phase1);
+
+
+            const off_On_Phase2 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_On_Path_Phase2 = new THREE.Mesh(off_On_Phase1);
+            scene.add(off_On_Path_Phase2);
+
+
+            const off_On_Phase3 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_On_Path_Phase3 = new THREE.Mesh(off_On_Phase1);
+            scene.add(off_On_Path_Phase3);
+
+            const off_On_Phase4 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_On_Path_Phase4 = new THREE.Mesh(off_On_Phase1);
+            scene.add(off_On_Path_Phase4);
+
+
+            let off_p1 = Line(scene, off_Phases[0], off_On_Path_Phase1, earth)
+            let off_pathGeometry_p1 = off_p1[1]
+            let off_connectLine_p1 = off_p1[0]
+
+            let off_p2 = Line(scene, off_Phases[1], off_On_Path_Phase2, earth)
+            let off_pathGeometry_p2 = off_p2[1]
+            let off_connectLine_p2 = off_p2[0]
+
+            let off_p3 = Line(scene, off_Phases[2], off_On_Path_Phase3, earth)
+            let off_pathGeometry_p3 = off_p3[1]
+            let off_connectLine_p3 = off_p3[0]
+
+            let off_p4 = Line(scene, off_Phases[3], off_On_Path_Phase4, earth)
+            let off_pathGeometry_p4 = off_p4[1]
+            let off_connectLine_p4 = off_p4[0]
+
+            //#endregion
+
+            //mini_MAP
+            const mini_scaleFactor = .2;
+            const mini_Map = new THREE.WebGLRenderer();
+            const mini_Screen = mini_Map.domElement;
+            document.getElementById('mini-map').appendChild(mini_Map.domElement);
+
+            mini_Map.setSize(window.innerWidth / 5, window.innerHeight / 5);
+
+            mini_Screen.style.position = "absolute"
+            mini_Screen.style.top = "500px"
+            mini_Screen.style["z-index"] = 5
+
+            mini_Screen.style.left = "60px"
+
+
+            // mini map display hopfully this works :3
+            const MiniMap_display = document.createElement("div");
+            MiniMap_display.style.position = "absolute";
+            MiniMap_display.style.top = "10px";
+            MiniMap_display.style.left = "10px";
+            MiniMap_display.style.background = "white";
+            MiniMap_display.style.color = "black";
+            // MiniMap_display.style.zIndex = 10
+
+
+            mini_Screen.style.border = "2px solid red"
+            mini_Screen.parentElement.appendChild(MiniMap_display);
+
+
+            const scene2 = new THREE.Scene();
+            const camera2 = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000000 // Large view frustum for large-scale scene
+            );
+
+
+
+
+
+
+
+
+            const mini_earthGeometry = new THREE.SphereGeometry(6371 * (1 / mini_scaleFactor), 32, 32);
+            const mini_earthTextureLoader = new THREE.TextureLoader();
+            const mini_earthTexture = earthTextureLoader.load('./images/earthmab.jpg');
+            const mini_earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
+            const mini_earth = new THREE.Mesh(mini_earthGeometry, earthMaterial);
+            scene2.add(mini_earth);
+
+            // Create orion square(for now until I create mesh) 
+            const mini_orionGeometry = new THREE.ConeGeometry(1700 * mini_scaleFactor, 3200, 3200);
+            const mini_orionTextureLoader = new THREE.TextureLoader();
+            const mini_orionTexture = orionTextureLoader.load('./images/orien_geeked.jpg.webp');
+            const mini_orionMaterial = new THREE.MeshBasicMaterial({ map: orionTexture });
+            const mini_orion = new THREE.Mesh(mini_orionGeometry, orionMaterial);
+            scene2.add(mini_orion);
+
+            const off_mini_orionGeometry = new THREE.ConeGeometry(1700 * mini_scaleFactor, 3200, 3200);
+            const off_mini_orionTextureLoader = new THREE.TextureLoader();
+            const off_mini_orionTexture = orionTextureLoader.load('./images/orien_geeked.jpg.webp');
+            const off_mini_orionMaterial = new THREE.MeshBasicMaterial({ map: orionTexture });
+            const off_mini_orion = new THREE.Mesh(mini_orionGeometry, orionMaterial);
+            scene2.add(off_mini_orion);
+
+            // Create moon sphere (radius 1, 32 segments)
+            const mini_moonGeometry = new THREE.SphereGeometry(6371 * mini_scaleFactor, 32, 32);
+            const mini_moonTextureLoader = new THREE.TextureLoader();
+            const mini_moonTexture = moonTextureLoader.load('./images/moon.jpg');
+            const mini_moonMaterial = new THREE.MeshBasicMaterial({ map: moonTexture });
+            const mini_moon = new THREE.Mesh(mini_moonGeometry, moonMaterial);
+            scene2.add(mini_moon);
+            //Satlelights
+            const mini_ds54Geometry = new THREE.SphereGeometry(6371 * (mini_scaleFactor), 32, 32);
+            const mini_ds54TextureLoader = new THREE.TextureLoader();
+            const mini_ds54Texture = ds54TextureLoader.load('./images/moon.jpg');
+            const mini_ds54Material = new THREE.MeshBasicMaterial({ map: ds54Texture });
+            const mini_ds54 = new THREE.Mesh(mini_ds54Geometry, ds54Material);
+            scene2.add(mini_ds54);
+
+            const mini_ds24Geometry = new THREE.SphereGeometry(6371 * (mini_scaleFactor), 32, 32);
+            const mini_ds24TextureLoader = new THREE.TextureLoader();
+            const mini_ds24Texture = ds24TextureLoader.load('./images/moon.jpg');
+            const mini_ds24Material = new THREE.MeshBasicMaterial({ map: ds24Texture });
+            const mini_ds24 = new THREE.Mesh(mini_ds24Geometry, ds24Material);
+            scene2.add(mini_ds24);
+
+            const mini_ds34Geometry = new THREE.SphereGeometry(6371 * (mini_scaleFactor), 32, 32);
+            const mini_ds34TextureLoader = new THREE.TextureLoader();
+            const mini_ds34Texture = ds34TextureLoader.load('./images/moon.jpg');
+            const mini_ds34Material = new THREE.MeshBasicMaterial({ map: ds34Texture });
+            const mini_ds34 = new THREE.Mesh(mini_ds34Geometry, ds34Material);
+            scene2.add(mini_ds34);
+
+
+
+            //#region mini PHASES
+
+            let mini_Phases = [0x00FF00, 0xFF0000, 0x00FFFF, 0xFFFF00]
+            let off_mini_Phases = [0xD9EAD3, 0xF4CCCC, 0xD0E0E3, 0xFFF2CC]
+
+            const mini_On_Phase1 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let mini_On_Path_Phase1 = new THREE.Mesh(mini_On_Phase1);
+            scene2.add(mini_On_Path_Phase1);
+
+
+            const mini_On_Phase2 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let mini_On_Path_Phase2 = new THREE.Mesh(mini_On_Phase1);
+            scene2.add(mini_On_Path_Phase2);
+
+
+            const mini_On_Phase3 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let mini_On_Path_Phase3 = new THREE.Mesh(mini_On_Phase1);
+            scene2.add(mini_On_Path_Phase3);
+
+            const mini_On_Phase4 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let mini_On_Path_Phase4 = new THREE.Mesh(mini_On_Phase1);
+            scene2.add(mini_On_Path_Phase4);
+
+
+            let mini_p1 = Line(scene2, mini_Phases[0], mini_On_Path_Phase1, earth)
+            let mini_pathGeometry_p1 = mini_p1[1]
+            let mini_connectLine_p1 = mini_p1[0]
+
+            let mini_p2 = Line(scene2, mini_Phases[1], mini_On_Path_Phase2, earth)
+            let mini_pathGeometry_p2 = mini_p2[1]
+            let mini_connectLine_p2 = mini_p2[0]
+
+            let mini_p3 = Line(scene2, mini_Phases[2], mini_On_Path_Phase3, earth)
+            let mini_pathGeometry_p3 = mini_p3[1]
+            let mini_connectLine_p3 = mini_p3[0]
+
+            let mini_p4 = Line(scene2, mini_Phases[3], mini_On_Path_Phase4, earth)
+            let mini_pathGeometry_p4 = mini_p4[1]
+            let mini_connectLine_p4 = mini_p4[0]
+
+
+            const off_mini_On_Phase1 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_mini_On_Path_Phase1 = new THREE.Mesh(off_mini_On_Phase1);
+            scene2.add(off_On_Path_Phase1);
+
+
+            const off_mini_On_Phase2 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_mini_On_Path_Phase2 = new THREE.Mesh(off_mini_On_Phase2);
+            scene2.add(off_mini_On_Path_Phase2);
+
+
+            const off_mini_On_Phase3 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_mini_On_Path_Phase3 = new THREE.Mesh(off_mini_On_Phase3);
+            scene2.add(off_mini_On_Path_Phase3);
+
+
+            const off_mini_On_Phase4 = new THREE.ConeGeometry(1, 1, 1);// THE TRAIL
+            let off_mini_On_Path_Phase4 = new THREE.Mesh(off_mini_On_Phase4);
+            scene2.add(off_mini_On_Path_Phase4);
+
+            let off_mini_p1 = Line(scene2, off_mini_Phases[0], off_mini_On_Path_Phase1, earth)
+            let off_mini_pathGeometry_p1 = off_mini_p1[1]
+            let off_mini_connectLine_p1 = off_mini_p1[0]
+
+            let off_mini_p2 = Line(scene2, off_mini_Phases[1], off_mini_On_Path_Phase2, earth)
+            let off_mini_pathGeometry_p2 = off_mini_p2[1]
+            let off_mini_connectLine_p2 = off_mini_p2[0]
+
+            let off_mini_p3 = Line(scene2, off_mini_Phases[2], off_mini_On_Path_Phase3, earth)
+            let off_mini_pathGeometry_p3 = off_mini_p3[1]
+            let off_mini_connectLine_p3 = off_mini_p3[0]
+
+            let off_mini_p4 = Line(scene2, off_mini_Phases[3], off_mini_On_Path_Phase4, earth)
+            let off_mini_pathGeometry_p4 = off_mini_p4[1]
+            let off_mini_connectLine_p4 = off_mini_p4[0]
+
+
+
+            let Orion_Model = await Import_Model("TexturedOrion")
+            let off_Orion_Model = await Import_Model("TexturedOrion")
+
+            let mini_Orion_Model = await Import_Model("TexturedOrion")
+            let off_mini_Orion_Model = await Import_Model("TexturedOrion")
+
+
+            let Orion_ModePhase2 = await Import_Model("orion_phase2")
+            let off_Orion_ModePhase2 = await Import_Model("orion_phase2")
+
+            let mini_Orion_ModePhase2 = await Import_Model("orion_phase2")
+            let off_mini_Orion_ModePhase2 = await Import_Model("orion_phase2")
+
+
+            let Orion_ModePhase3 = await Import_Model("orion_phase3")
+            let off_Orion_ModePhase3 = await Import_Model("orion_phase3")
+
+            let mini_Orion_ModePhase3 = await Import_Model("orion_phase3")
+            let off_mini_Orion_ModePhase3 = await Import_Model("orion_phase3")
+
+
+
+
+
+            Orion_Model = Orion_Model.scene
+            off_Orion_Model = off_Orion_Model.scene
+
+            mini_Orion_Model = mini_Orion_Model.scene
+            off_mini_Orion_Model = off_mini_Orion_Model.scene
+            Orion_ModePhase2 = Orion_ModePhase2.scene
+            Orion_ModePhase3 = Orion_ModePhase3.scene
+
+            Orion_Model.scale.set(10, 10, 10)
+
+            off_Orion_Model.scale.set(23, 23, 23)
+            Orion_ModePhase2.scale.set(10, 20, 20)
+
+            Orion_ModePhase3.scale.set(10, 10, 10)
+
+            mini_Orion_Model.scale.set(2, 2, 2)
+
+            off_mini_Orion_Model.scale.set(2, 2, 2)
+
+            let Current_Model = Orion_Model
+
+            scene.add(Orion_Model)
+
+            scene.add(off_Orion_Model)
+            scene.add(Orion_ModePhase2)
+            scene.add(Orion_ModePhase3)
+
+            scene2.add(mini_Orion_Model)
+
+            scene2.add(off_mini_Orion_Model)
+            //#endregion
+
+            camera2.position.set(
+                -104797.56516116574,
+                -18104.927501113834,
+                -43963.8247716744);
+            camera2.lookAt(earth.position);
+
+            //#endregion mini_MAP
+
+            //#region ADD_LINES
+
+            // Update connection line between Earth and Orion
+
+            //MOON
+            let mini_Line_Data_Moon = Line(scene2, 0xFFF000, mini_moon, mini_earth)
+            let mini_pathGeometry_Moon = mini_Line_Data_Moon[1]
+            let mini_connectLine_Moon = mini_Line_Data_Moon[0]
+            let mini_Point_Moon = 0
+
+            let Line_Data_Moon = Line(scene, 0xFFF000, moon, earth)
+            let pathGeometry_Moon = Line_Data_Moon[1]
+            let connectLine_Moon = Line_Data_Moon[0]
+            let Point_Moon = 0
+
+            // ORION 
+            let mini_Line_Data_Orion = Line(scene2, 0xFFFFFF, mini_orion, mini_earth)
+            let mini_pathGeometry_Orion = mini_Line_Data_Orion[1]
+            let mini_connectLine_Orion = mini_Line_Data_Orion[0]
+            let mini_Point_Orion = 0
+
+            let Line_Data_Orion = Line(scene, 0xFFFFFF, Orion_Model, earth)
+            let pathGeometry_Orion = Line_Data_Orion[1]
+            let connectLine_Orion = Line_Data_Orion[0]
+            let Point_Orion = 0
+
+
+
+            let off_Line_Data_Orion = Line(scene, 0x666666, Orion_Model, earth)
+            let off_pathGeometry_Orion = off_Line_Data_Orion[1]
+            let off_connectLine_Orion = off_Line_Data_Orion[0]
+            let off_Point_Orion = 0
+
+            let off_mini_Line_Data_Orion = Line(scene2, 0x666666, off_mini_orion, mini_earth)
+            let off_mini_pathGeometry_Orion = mini_Line_Data_Orion[1]
+            let off_mini_connectLine_Orion = mini_Line_Data_Orion[0]
+            let off_mini_Point_Orion = 0
+            // Sattlelights
+
+            let mini_Line_Data_ds54 = Line(scene2, 0xFF0000, mini_ds54, mini_earth)
+            let mini_pathGeometry_ds54 = mini_Line_Data_ds54[1]
+            let mini_connectLine_ds54 = mini_Line_Data_ds54[0]
+            let mini_Point_ds54 = 0
+
+            let Line_Data_ds54 = Line(scene, 0xFF0000, ds54, earth)
+            let pathGeometry_ds54 = Line_Data_ds54[1]
+            let connectLine_ds54 = Line_Data_ds54[0]
+            let Point_ds54 = 0
+
+            let mini_Line_Data_ds24 = Line(scene2, 0xFF0000, mini_ds24, mini_earth)
+            let mini_pathGeometry_ds24 = mini_Line_Data_ds24[1]
+            let mini_connectLine_ds24 = mini_Line_Data_ds24[0]
+            let mini_Point_ds24 = 0
+
+            let Line_Data_ds24 = Line(scene, 0xFF0000, ds24, earth)
+            let pathGeometry_ds24 = Line_Data_ds24[1]
+            let connectLine_ds24 = Line_Data_ds24[0]
+            let Point_ds24 = 0
+
+            let mini_Line_Data_ds34 = Line(scene2, 0xFF0000, mini_ds34, mini_earth)
+            let mini_pathGeometry_ds34 = mini_Line_Data_ds34[1]
+            let mini_connectLine_ds34 = mini_Line_Data_ds34[0]
+            let mini_Point_ds34 = 0
+
+            let Line_Data_ds34 = Line(scene, 0xFF0000, ds34, earth)
+            let pathGeometry_ds34 = Line_Data_ds34[1]
+            let connectLine_ds34 = Line_Data_ds34[0]
+            let Point_ds34 = 0
+            let Show_Original = true
+
+
+            //#endregion ADD_LINES
+
+            //#region GUI
+            function dragElement(elmnt) {
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (document.getElementById(elmnt.id + "header")) {
+                    // if present, the header is where you move the DIV from:
+                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                } else {
+                    // otherwise, move the DIV from anywhere inside the DIV:
+                    elmnt.onmousedown = dragMouseDown;
+                }
+
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // get the mouse cursor position at startup:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // call a function whenever the cursor moves:
+                    document.onmousemove = elementDrag;
+                }
+
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // calculate the new cursor position:
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // set the element's new position:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                }
+
+                function closeDragElement() {
+                    // stop moving when mouse button is released:
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
+            }
+            const offAntCheck = document.getElementById('check-off-path');
+            const data2 = document.getElementById('data2')
+            const onAntCheck = document.getElementById('check-on-path');
+            const onStatus = document.getElementById('check-status');
+            const Instructions = document.getElementById('Info_screen');
+
+
+            // Displays for sections
+
+
+            const off_AntDisplay = document.getElementById('off-ant-display');
+            const on_AntDisplay = document.getElementById('on-ant-display');
+            const onStatusDisplay = document.getElementById('on-Status-Display');
+            const InstructionsDisplay = document.getElementById('Info_screen-Display');
+
+            // Make displays draggable
+
+
+            dragElement(off_AntDisplay);
+            dragElement(mini_Screen);
+            dragElement(on_AntDisplay);
+            dragElement(onStatusDisplay);
+            dragElement(InstructionsDisplay);
+
+            // Set defaults for checked items
+            onAntCheck.checked = true;
+            onStatus.checked = true;
+     //       data2.checked = true;
+
+            Instructions.checked = true;
+            mini_Scre.checked = true;
+
+            off_AntDisplay.style.display = 'none'
+            on_AntDisplay.style.display = 'block'
+            onStatusDisplay.style.display = 'block'
+            onStatus.onchange = () => {
+                if (onStatus.checked) {
+                    Show_Original = true
+                    onStatusDisplay.style.display = 'block'
+                }
+                else {
+                    Show_Original = false
+                    onStatusDisplay.style.display = 'none'
+                }
+            }
+            onAntCheck.onchange = () => {
+                if (onAntCheck.checked) {
+                    on_AntDisplay.style.display = 'block'
+                    on_path = true
+                }
+
+                else {
+                    on_AntDisplay.style.display = 'none'
+                    on_path = false
+                }
+            }
+            offAntCheck.onchange = () => {
+                if (offAntCheck.checked) {
+                    off_path = true
+                    off_AntDisplay.style.display = 'block'
+                }
+
+                else {
+                    off_AntDisplay.style.display = 'none'
+                    off_path = false
+
+                }
+
+            }
+            InstructionsDisplay.style.display = 'block'
+            Info_screen.onchange = () => {
+                if (Info_screen.checked) {
+                    InstructionsDisplay.style.display = 'block'
+                }
+
+                else {
+                    InstructionsDisplay.style.display = 'none'
+                }
+            }
+            mini_Scre.onchange = () => {
+                if (mini_Scre.checked) {
+                    mini_Screen.style.visibility = "visible";
+
+                }
+                else {
+                    mini_Screen.style.visibility = "hidden";
+
+                }
+            }
+
+
+            //#endregion GUI           
+
+            //#region SETTING HTML ELEMENTS
+            // Animation variables
+            let i = 0;
+            let mini_i = 0;
+
+
+            let distance = 0;
+            let off_distance = 0;
+            const distanceTravelled = document.getElementById('distance-travelled');
+            const off_distanceTravelled = document.getElementById('off_distance-travelled');
+            const Data_DS54 = document.getElementsByClassName('DS54');
+            const Data_DS34 = document.getElementsByClassName('DS34');
+            const Data_DS24 = document.getElementsByClassName('DS24');
+            const Data_WPSA = document.getElementsByClassName('WPSA');
+            const Data_Best = document.getElementsByClassName('best');
+
+            const totalRows = artemisData.length - 1;
+            const time = document.getElementsByClassName('Time');
+            const slider = document.getElementById('Animation-slider');
+            //#endregion SETTING HTML ELEMENTS
+
+            //#region LINK BUDGET
+
+            //#endregion LINK BUDGET
+
+            //#region BACKGROUND
+            const spaceTextureLoader = new THREE.TextureLoader();
+            const spaceTexture = spaceTextureLoader.load('./images/black.jpg');
+            scene.background = spaceTexture;
+
+
+            // vafiriable for normal-speed(fast-forward buttons :3)
+            let speedFactor = .1;
+            // Variable to control pause state
+            let isPaused = false;
+            let isFastForward = false;
+
+            // partical background hopfully 
+            const starGeo = new THREE.BufferGeometry();
+            const starPositions = [];
+
+            // adds by one if its less then 10k and stays the same once its not lower then 10k 
+            const starCount = 10000;
+            let Old_Link = -1
+
+            for (let i = 0; i < starCount; i++) {
+                const x = (Math.random() - 0.5) * 20000000; // generates random number around 0.5 and multiplies it by said number added (20,000,000)
+                const y = (Math.random() - 0.5) * 20000000; // 20,000,000 because we needed a large amount of stars :3 
+                const z = (Math.random() - 0.5) * 20000000;
+                starPositions.push(x, y, z);
+
+            }
+
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+
+            // particle mats 
+            const starMats = new THREE.PointsMaterial({ size: 10000, color: 0xffffff });
+
+            // add stars to scene >:3
+            const stars = new THREE.Points(starGeo, starMats);
+            const stars2 = new THREE.Points(starGeo, starMats);
+            scene.add(stars)
+            scene2.add(stars2)
+
+            //#endregion BACKGROUND
+
+            //#region ANIMATION
+            // initialize distnace (also time :3)
+            let TotalDistance = 0;
+            let Previousposition = new THREE.Vector3();
+            let Previoustime = 0;
+            let elapsedTime = 0;
+            let Alpha = ""
+            // slider ( if this doenst work im gonna tweak)
+            slider.max = totalRows - 1;
+
+            let G1 = 1480
+            let G2 = 7100
+            let G3 = 12950
+            let G4 = totalRows
+
+
+
+            //region INPUTS when sliders moved, 
+
+            slider.addEventListener('input', () => {
+                i = parseInt(slider.value, 10);
+                // document.getElementById('pause').addEventListener('click', () => {
+                slider.max = totalRows - 1;
+                slider.value = i;
+
+            });
+
+
+            //endregion INPUTS when sliders moved, 
+
+            // Function to format time based on Artemis data index
+            function formatTimeFromIndex(index) {
+                // Return the formatted time as DD:HH:MM:SS
+                const seconds = artemisData[index].time * 60;
+                const minutes = Math.floor((seconds % 3600) / 60);
+                const hours = Math.floor((seconds % 86400) / 3600);
+                const days = Math.floor(seconds / 86400);
+                const remainingSeconds = Math.floor(seconds % 60);
+                return `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+
+            }
+
+            // Function to update the scene based on the Artemis data index
+            const mini_index = 7080
+
+
+            let All_Objects = {
+                "moon": ["moon", moon, scaleFactor, pathGeometry_Moon, connectLine_Moon],
+                "moon2": ["moon", mini_moon, mini_scaleFactor, mini_pathGeometry_Moon, mini_connectLine_Moon],
+                "orion": ["artemis", on_path_trail, scaleFactor, pathGeometry_Orion, connectLine_Orion],
+                "off_orion": ["off_artemis", off_path_trail, scaleFactor, off_pathGeometry_Orion, off_connectLine_Orion],
+                "off_orion2": ["artemis", off_mini_orion, mini_scaleFactor, off_mini_pathGeometry_Orion, off_mini_connectLine_Orion],
+                "Orion_Model": ["artemis", Orion_Model, scaleFactor],
+                "off_Orion_Model": ["off_artemis", off_Orion_Model, scaleFactor],
+                "Orion_Model2": ["artemis", mini_Orion_Model, mini_scaleFactor],
+                "off_Orion_Model2": ["off_artemis", off_mini_Orion_Model, mini_scaleFactor],
+                "orion2": ["artemis", mini_orion, mini_scaleFactor, mini_pathGeometry_Orion, mini_connectLine_Orion],
+                "ds54": [ds54, scaleFactor, pathGeometry_ds54, connectLine_ds54],
+                "ds24": [ds24, scaleFactor, pathGeometry_ds24, connectLine_ds24],
+                "ds34": [ds34, scaleFactor, pathGeometry_ds34, connectLine_ds34],
+                "p1": ["artemis", On_Path_Phase1, scaleFactor, pathGeometry_p1, connectLine_p1],
+                "p2": ["artemis", On_Path_Phase2, scaleFactor, pathGeometry_p2, connectLine_p2],
+                "p3": ["artemis", On_Path_Phase3, scaleFactor, pathGeometry_p3, connectLine_p3],
+                "p4": ["artemis", On_Path_Phase4, scaleFactor, pathGeometry_p4, connectLine_p4],
+                "off_p1": ["off_artemis", off_On_Path_Phase1, scaleFactor, off_pathGeometry_p1, off_connectLine_p1],
+                "off_p2": ["off_artemis", off_On_Path_Phase2, scaleFactor, off_pathGeometry_p2, off_connectLine_p2],
+                "off_p3": ["off_artemis", off_On_Path_Phase3, scaleFactor, off_pathGeometry_p3, off_connectLine_p3],
+                "off_p4": ["off_artemis", off_On_Path_Phase4, scaleFactor, off_pathGeometry_p4, off_connectLine_p4],
+
+                "mini_p1": ["artemis", mini_On_Path_Phase1, mini_scaleFactor, mini_pathGeometry_p1, mini_connectLine_p1],
+                "mini_p2": ["artemis", mini_On_Path_Phase2, mini_scaleFactor, mini_pathGeometry_p2, mini_connectLine_p2],
+                "mini_p3": ["artemis", mini_On_Path_Phase3, mini_scaleFactor, mini_pathGeometry_p3, mini_connectLine_p3],
+                "mini_p4": ["artemis", mini_On_Path_Phase4, mini_scaleFactor, mini_pathGeometry_p4, mini_connectLine_p4],
+                "off_mini_p1": ["off_artemis", off_mini_On_Path_Phase1, mini_scaleFactor, off_mini_pathGeometry_p1, off_mini_connectLine_p1],
+                "off_mini_p2": ["off_artemis", off_mini_On_Path_Phase2, mini_scaleFactor, off_mini_pathGeometry_p2, off_mini_connectLine_p2],
+                "off_mini_p3": ["off_artemis", off_mini_On_Path_Phase3, mini_scaleFactor, off_mini_pathGeometry_p3, off_mini_connectLine_p3],
+                "off_mini_p4": ["off_artemis", off_mini_On_Path_Phase4, mini_scaleFactor, off_mini_pathGeometry_p4, off_mini_connectLine_p4],
+            }
+
+
+            camera.position.set(0, 0, -50000);
+            camera.lookAt(comet.position);
+            controls.update();
+            // Get the box element
+            const statusDisplayBox = document.getElementById("on-Status-Display");
+            let Velocity_Arrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), 0, 20, 0x3D85C6)
+            Velocity_Arrow.setLength(10000, 1000, 1000, 1000)
+
+            scene.add(Velocity_Arrow);
+
+            // Create an image element
+
+
+            // Make the box visible (for testing purposes)
+            let start = document.getElementById("stage-1")
+            let mid = document.getElementById("stage-2")
+            let end = document.getElementById("stage-3")
+            let mission_phase = ""
+            let beg = ""
+            let mission_image = ""
+            let charles = document.getElementById('mission_phase_print');
+            let fedrick = document.getElementById('phase_paragraph');
+            function calculateVelocity(vx, vy, vz) {
+                return Math.sqrt((vx ** 2) + (vy ** 2) + (vz ** 2)).toFixed(2); // Returns velocity as a string rounded to 2 decimals
+            }
+
+            //.style.display="block" (display it)
+            //"hide (hides it)"
+            const velocityDisplay = document.getElementById("velocity-display");
+
+            let stark = 0;
+            const velocityDisplay2 = document.getElementById("velocity-display2");
+
+            function Calculate_Distance(Index, Data_Sheet, s) {
+                let sum = 0
+                let i = 0
+
+            }
+
+
+            let All_Distances = []
+            let off_All_Distances = []
+
+            function Calculate_Distance(index, Data_Sheet, s) {
+
+
+                let distance = 0
+                let Extra = ""
+                let Delta_X = 0
+                let scalar = 0
+                let Index = 0
+                All_Distances[Index] = 0
+                off_All_Distances[Index] = 0
+
+                let Delta_Y = 0
+                let Delta_Z = 0
+
+                let off_Delta_X = 0
+                let off_Delta_Y = 0
+                let off_Delta_Z = 0
+                for (const [key, True_data] of Object.entries(artemisData)) {
+
+
+                    if (Index < 12980) {
+                        Delta_X = artemisData[Index + 1].artemis_p_x - artemisData[Index]["artemis_p_x"]
+                        Delta_Y = artemisData[Index + 1].artemis_p_y - artemisData[Index]["artemis_p_y"]
+                        Delta_Z = artemisData[Index + 1].artemis_p_z - artemisData[Index]["artemis_p_z"]
+
+                        off_Delta_X = artemisData[Index + 1]["off_" + "artemis_p_x"] - artemisData[Index]["off_" + "artemis_p_x"]
+                        off_Delta_Y = artemisData[Index + 1]["off_" + "artemis_p_y"] - artemisData[Index]["off_" + "artemis_p_y"]
+                        off_Delta_Z = artemisData[Index + 1]["off_" + "artemis_p_z"] - artemisData[Index]["off_" + "artemis_p_z"]
+
+                    }
+
+                    Index++
+
+                    All_Distances[Index] = All_Distances[Index - 1] + Math.sqrt(Math.pow(Delta_X, 2) + Math.pow(Delta_Y, 2) + Math.pow(Delta_Z, 2));
+                    off_All_Distances[Index] = off_All_Distances[Index - 1] + Math.sqrt(Math.pow(off_Delta_X, 2) + Math.pow(off_Delta_Y, 2) + Math.pow(off_Delta_Z, 2));
+                }
+            }
+
+
+            Calculate_Distance()
+            function Update_History(index, Extra) {
+                if (index >= 0 && index <= G1) {
+                    start.style.display = "block";
+                    mid.style.display = "none";
+                    end.style.display = "none";
+                    mission_phase = "Phases 1-5";
+                    beg = "Orion launches off from the Kennedy Space Center, it will perform adjustments and checks until (approximately) the one-day mark in high Earth orbit.";
+                }
+                else if (index >= G1 && index <= 1439) {
+                    start.style.display = "none";
+                    mid.style.display = "block";
+                    end.style.display = "none";
+
+                }
+                else if (index >= 1440 && index <= 1603) {
+                    start.style.display = "none";
+                    mid.style.display = "none";
+                    end.style.display = "block";
+                    mission_phase = "Phase 6";
+                    beg = "Interim Cryogenic Propulsion Stage (ICPS) sets Orion orbit";
+                }
+                else if (index >= 1604 && index <= 1633) {
+                    mission_phase = "Phase 7";
+                    beg = "The Perigee Raise Burn that will set Orion on the path to be leave earths orbit";
+                }
+                else if (index >= 1634 && index <= 1734) {
+                    mission_phase = "Phase 8";
+                    beg = "Trans-Lunar injection that will launch Orion out of Earth's orbit into the moon";
+                }
+                else if (index >= 1735 && index <= 6523) {
+                    mission_phase = "Phase 9";
+                    beg = "The 4 day trip Orion takes before entering the area of the moon";
+                }
+                else if (index >= 6524 && index <= 7837) {
+                    mission_phase = "Phase 10";
+                    beg = "Orion enter the 4,000 nautical mile radius from the moon";
+                }
+                else if (index >= 7838 && index <= 12831) {
+                    mission_phase = "Phase 11";
+                    beg = "Orion takes its return trip back to the earth adjusting its rockets as necessary on the way";
+
+
+                }
+                else if (index >= 12832 && index <= 12964) {
+                    mission_phase = "Phase 12";
+                    beg = "Orion separates the crew module from the service module";
+                }
+                else if (index >= 12965 && index <= 12967) {
+                    mission_phase = "Phase 13";
+                    beg = "Orion enters earth's atmosphere";
+
+
+                }
+                else {
+                    mission_phase = "Phase 14";
+                    beg = "Orion lands in the pacific ocean ready for pick up by the navy";
+                }
+
+
+
+                charles.textContent = `${mission_phase}`;
+                fedrick.textContent = `${beg}`;
+                // //console.log(index);
+                // //console.log(charles);
+
+
+                // Ensure the index is within the range of the artemisData array
+                if (i < artemisData.length) {
+                    const { artemis_v_x, artemis_v_y, artemis_v_z } = artemisData[i];
+                    const velocity = calculateVelocity(artemis_v_x, artemis_v_y, artemis_v_z);
+
+                    // Update velocity display
+                    velocityDisplay.innerHTML = `${velocity} `;
+
+                    // Move to the next data point
+                }
+                if (i < artemisData.length) {
+                    const { off_artemis_v_x, off_artemis_v_y, off_artemis_v_z } = artemisData[i];
+                    const velocity2 = calculateVelocity(off_artemis_v_x, off_artemis_v_y, off_artemis_v_z);
+                    // Update velocity display
+                    velocityDisplay2.innerHTML = `${velocity2} `;
+
+
+                    // Move to the next data point
+                }
+
+                Extra = ""
+                let Best = GetLink_budget_From_int(index)
+
+
+                // Update distance and time
+
+
+                distance = Math.floor(All_Distances[index])
+                off_distance = Math.floor(off_All_Distances[index])
+
+                distanceTravelled.innerText = `${distance}`;
+                off_distanceTravelled.innerText = `${off_distance}`;
+
+                function Manage_Class(NAME, PASS) {
+                    for (let i = 0; i < NAME.length; i++) {
+                        NAME[i].innerText = PASS;
+                    }
+
+                }
+if (Best[0].baud > Old_Link){
+    console.log("Switch")
+    Old_Link = Best[0].baud
+    Best[0] = Old_Link
+}
+                Manage_Class(Data_Best, `${Old_Link.antennaName}`)
+                Manage_Class(Data_DS24, `${Best[1]}`)
+                Manage_Class(Data_DS34, `${Best[2]}`)
+
+                Manage_Class(Data_DS54, `${Best[3]}`)
+                Manage_Class(Data_WPSA, `${Best[4]}`)
+
+                Manage_Class(time, formatTimeFromIndex(index))
+
+
+
+            }
+
+
+
+            function updateScene(index, Object_Name, Special) {
+                let Magnitude_X = 1
+                let Magnitude_Y = 1
+                let Magnitude_Z = 1
+                let name = Object_Name
+                if (Object_Name == "Orion_Model" || Object_Name == "Orion_Model2") {
+
+                    Special = All_Objects[Object_Name][1]
+                    if (index < G1) {
+                        if (Special !== Orion_Model) {
+                            Special.position.set(0, 0, 0)
+
+                            //console.log("not here maine")
+                            All_Objects[Object_Name][1] = Orion_Model
+                            Special = All_Objects[Object_Name][1]
+                        }
+                    }
+                    else if (index > G1 && index < G2) {
+                        if (Special !== Orion_ModePhase2) {
+                            Special.position.set(0, 0, 0)
+                            //console.log("not here p2")
+                            All_Objects[Object_Name][1] = Orion_ModePhase2
+                            Special = All_Objects[Object_Name][1]
+                            // scene.remove( Orion_Model);
+                        }
+                    }
+
+                    else if (index > G2) {
+                        if (Special !== Orion_ModePhase3) {
+                            Special.position.set(0, 0, 0)
+                            //console.log("not here p3")
+                            All_Objects[Object_Name][1] = Orion_ModePhase3
+                            Special = All_Objects[Object_Name][1]
+                            // scene.remove( Orion_ModePhase2);
+                        }
+                    }
+
+
+
+
+                    Alpha = ""
+                    Object_Name = Alpha + "orion"
+                    Object_Name = All_Objects[Alpha + "orion"][0]
+                    let Art_X_Rot = artemisData[index][Alpha + Object_Name + "_v_x"] * scaleFactor * Magnitude_X;
+                    let Art_Y_Rot = artemisData[index][Alpha + Object_Name + "_v_y"] * scaleFactor * Magnitude_Y;
+                    let Art_Z_Rot = artemisData[index][Alpha + Object_Name + "_v_z"] * scaleFactor * Magnitude_Z;
+                    let Art_X = artemisData[index][Alpha + Object_Name + "_p_x"] * scaleFactor * Magnitude_X;
+                    let Art_Y = artemisData[index][Alpha + Object_Name + "_p_y"] * scaleFactor * Magnitude_Y;
+                    let Art_Z = artemisData[index][Alpha + Object_Name + "_p_z"] * scaleFactor * Magnitude_Z;
+                    let Art_X2 = 0
+                    let Art_Y2 = 0
+                    let Art_Z2 = 0
+                    let Art_X2_P = 0
+                    let Art_Y2_P = 0
+                    let Art_Z2_P = 0
+
+                    if (artemisData[index + 1]) {
+
+                        Art_X2 = artemisData[index + 1][Alpha + Object_Name + "_v_x"] * scaleFactor * Magnitude_X;
+                        Art_Y2 = artemisData[index + 1][Alpha + Object_Name + "_v_y"] * scaleFactor * Magnitude_Y;
+                        Art_Z2 = artemisData[index + 1][Alpha + Object_Name + "_v_z"] * scaleFactor * Magnitude_Z;
+
+                        Art_X2_P = artemisData[index + 1][Alpha + Object_Name + "_p_x"] * scaleFactor * Magnitude_X;
+                        Art_X2_P = artemisData[index + 1][Alpha + Object_Name + "_p_y"] * scaleFactor * Magnitude_Y;
+                        Art_X2_P = artemisData[index + 1][Alpha + Object_Name + "_p_z"] * scaleFactor * Magnitude_Z;
+                    };
+                    //  let dis = new THREE.Vector3( ()), Math.sqrt( (Math.pow(Art_Y2-Art_Y,2))),Math.sqrt( (Math.pow(Art_Z2-Art_Z,2)))
+                    let Xrot = Math.atan2(Math.sqrt(Math.pow(Art_X2 - Art_X, 2)))
+
+                    let Yrot = Math.atan2(Math.sqrt(Math.pow(Art_Y2 - Art_Y, 2)))
+                    let Zrot = Math.atan2()
+                    let Past_V = new THREE.Vector3(Art_X_Rot, Art_Y_Rot, Art_Z_Rot)
+                    let Future_V = new THREE.Vector3(0, 0, 0)
+                    let Present_V_Vector = Past_V.clone().add(Future_V).normalize()
+                    const dir = Present_V_Vector.normalize()
+                    //normalize the direction vector (convert to vector of length 1)
+                    Special.position.set(Art_X, Art_Y, Art_Z)//clone().add(Middle)
+                    Velocity_Arrow.setLength(10000 * velocityDisplay.innerHTML, 1000, 1000, 1000)
+
+                    //let new_arrow = new THREE.Vector3(Art_X2_P - Art_X,Art_Y2_P - Art_Y,Art_Z2_P - Art_Z)
+                    Velocity_Arrow.setDirection(dir)
+                    Velocity_Arrow.position.copy(Special.position)
+                    //console.log(Velocity_Arrow)
+
+
+                    Special.rotation.set(Present_V_Vector.x, Present_V_Vector.y, Present_V_Vector.z)
+                    Current_Model = Special
+                }
+                else if (Object_Name == "off_Orion_Model" || Object_Name == "off_Orion_Model2") {
+                    Alpha = "off_"
+                    Special = All_Objects[Object_Name][1]
+                    Object_Name = Alpha + "orion"
+                    Object_Name = All_Objects[Alpha + "orion"][0]
+                    let Art_X = artemisData[index][Alpha + Object_Name + "_p_x"] * scaleFactor * Magnitude_X;
+                    let Art_Y = artemisData[index][Alpha + Object_Name + "_p_y"] * scaleFactor * Magnitude_Y;
+                    let Art_Z = artemisData[index][Alpha + Object_Name + "_p_z"] * scaleFactor * Magnitude_Z;
+                    Special.position.set(Art_X, Art_Y, Art_Z)
+                }
+                else {
+                    // Update Orion's position from Artemis data
+
+
+                    let Object = All_Objects[Object_Name][1]
+                    let scaleFactor = All_Objects[Object_Name][2]
+                    let pathGeometry = All_Objects[Object_Name][3]
+                    let connectLine = All_Objects[Object_Name][4]
+                    Object_Name = All_Objects[Object_Name][0] //bc orion is artemis in the datasheet
+
+                    Object.position.x = artemisData[index][Object_Name + "_p_x"] * scaleFactor * Magnitude_X;
+                    Object.position.y = artemisData[index][Object_Name + "_p_y"] * scaleFactor * Magnitude_Y;
+                    Object.position.z = artemisData[index][Object_Name + "_p_z"] * scaleFactor * Magnitude_Z;
+                    // Update distance and time
+
+                    //   //////console.log(Object_Name+"_p_z")
+                    All_Objects[name][3].dispose()
+                    All_Objects[name][3] = updatePathLine2(index, Object_Name, Object, pathGeometry, connectLine, scaleFactor, Special)
+                    All_Objects[name][4].geometry = All_Objects[name][3]
+
+
+
+                }
+                camera.lookAt(comet.position);
+
+            }
+
+            // the ploting of the comet (should be invis box but for now its to be able to see what needs to be done)
+            const cometINx = -200000;
+            const cometINy = -60000;
+            const cometINz = -50000;
+            const cometPosition = comet.position.set(cometINx, cometINy, cometINz)
+
+
+            let focusonEarth = true;
+            let focusonOrion = true;
+            let focusonMoon = true;
+            let focusonComet = true;
+            let on_path = true
+            let off_path = false
+
+
+            //rizz 3, these "rizz are jjst checkpoints cause its ez to remember"
+            // below is for the key switching wanna start off at earth (possibly starting at the comet/void/insisible sphere/invisible ube)
+            let key = 0
+           
+
+            // function for changing this  >:)
+            function updateOrionPov() {
+
+                // // use the data correctly 
+                const currentIndex = Math.min(i, totalRows - 1);
+
+                // // before getting this data ima put into variable for smth
+                let artemisINx = artemisData[currentIndex].artemis_p_x * scaleFactor;
+                let artemisINy = artemisData[currentIndex].artemis_p_y * scaleFactor;
+                let artemisINz = artemisData[currentIndex].artemis_p_z * scaleFactor;
+                // Gets the artemis data 
+                const orionPosition = new THREE.Vector3(
+                    artemisINx,
+                    artemisINy,
+                    artemisINz,
+                );
+
+                // for a third person typa view 
+                const Orion_thirdPOV_back = 5000; // Distance behind orion
+                const Orion_thirdPOV_height = 0; // distance obove orion
+
+
+                // focus on orien 
+                camera.position.set(Current_Model.position.x - Orion_thirdPOV_back, Current_Model.position.y + Orion_thirdPOV_height, Current_Model.position.z - Orion_thirdPOV_back);
+                // let cams = camera.position.set(artemisINx - Orion_thirdPOV_back, artemisINy + Orion_thirdPOV_height, artemisINz - Orion_thirdPOV_back);
+
+                // so basicly everytime i swittch using c key
+                // it sets the cam position as where orion is when i presssed the c key
+                // but it doesnt follow orion so that means that
+                // need to pu it where the data is being updated continuouly to track it
+                // same thing for quote on quote "commet" and the "moon"
+                // fix immediatly (timein; 9:16)
+                camera.lookAt(orionPosition);
+                controls.update();
+            }
+
+
+
+            function updateMoonPov() {
+                // get current index
+
+                const currentIndex = Math.min(i, totalRows - 1);
+
+                // this just to get arrtemis data into variables that may or may not help
+                let unreg_moonINx = artemisData[i].moon_p_x * scaleFactor;
+                let unreg_moonINy = artemisData[i].moon_p_y * scaleFactor;
+                let unreg_moonINz = artemisData[i].moon_p_z * scaleFactor;
+
+                let reg_moonINx = artemisData[currentIndex].moon_p_x * scaleFactor;
+                let reg_moonINy = artemisData[currentIndex].moon_p_y * scaleFactor;
+                let reg_moonINz = artemisData[currentIndex].moon_p_z * scaleFactor;
+                // Gets the artemis data 
+
+                const moonPosition = new THREE.Vector3(
+                    reg_moonINx,
+                    reg_moonINy,
+                    reg_moonINz,
+                );
+
+
+                // for a third person typa view 
+                const Moon_thirdPOV_back = 5000; // Distance behind mooon
+                const Moon_thirdPOV_height = 7000; // Distance below  mooon
+
+                // // focus on the mooon 
+                camera.position.set(unreg_moonINx - Moon_thirdPOV_back, unreg_moonINy - Moon_thirdPOV_height, unreg_moonINz - Moon_thirdPOV_back);
+                camera.lookAt(moonPosition);
+                controls.update();
+            }
+
+
+            function updateCometPov() {
+                // for a third person typa view 
+                const Comet_thirdPOV_back = -60000; // Distance behind the comet
+                const Comet_thirdPOV_height = -10000; // distance obove the comet
+
+                // focus on orien 
+                camera.position.set(cometINx + Comet_thirdPOV_back, cometINy + Comet_thirdPOV_height, cometINz + Comet_thirdPOV_back);
+
+                camera.lookAt(cometPosition);
+                controls.update();
+            }
+            const pathPositions = new THREE.Vector3(0, 0, 0);
+            // Function to calculate resultant velocity
+            // Get reference to the velocity display element
+            // Get reference to the velocity display element
+
+            // Function to calculate resultant velocity
+
+            document.getElementById('+').addEventListener('click', () => {
+                    if (camera.fov > 20) {
+                        camera.fov -= 10;
+                        camera.updateProjectionMatrix();
+                    }
+
+                });
+
+                document.getElementById('c').addEventListener('click', () => {
+                 // focusonEarth = !focusonEarth;
+                 key += 1;
+                    if (key === 0) {
+                        camera.position.set(0, 0, -50000)
+                    } else if (key === 1) {
+                        updateOrionPov();
+                    } else if (key === 2) {
+                        updateMoonPov();
+                    } else if (key === 3) {
+                        updateCometPov();
+                        key = -1;
+                    }
+                    controls.update();
+
+                });
+
+
+
+                document.getElementById('-').addEventListener('click', () => {
+                    if (camera.fov < 100) {
+                        camera.fov += 10;
+                        camera.updateProjectionMatrix();
+                    }
+                });
+                document.getElementById('pause').addEventListener('click', () => {
+                    isPaused = !isPaused
+                })
+            function animate() {
+                requestAnimationFrame(animate);
+                camera.lookAt(comet.position);
+
+                // Ensure the index is within the range of the artemisData array
+                // Setting up zoom in and zoom out
+               
+                // document.getElementById('pause').addEventListener('click', () => {
+                //     if (camera.fov > 20) {
+                //         camera.fov -= 10;
+                //         camera.updateProjectionMatrix();
+                //     }
+
+                // });
+
+
+                slider.value = i;
+
+                /* if (Orion_Model != null) {
+                    updateScene(i, null, Orion_Model)
+                } */
+                if (isPaused == true) {
+                    i = i
+
+                } else {
+                    i += 10 * speedFactor
+                }
+
+//console.log(i)
+                //UPDATE EVERY SECOND
+                // Renderer
+
+                //////console.log(i)
+                ; // Update index for animation
+                if (i >= totalRows) {
+                    i = 0; // Reset if we reach the end
+                    //////console.log("RESET")
+
+
+                    distance = 0;
+                    off_distance = 0;
+
+
+                }
+                updateScene(i, "moon");
+                updateScene(i, "moon2");
+                updateScene(i, "Orion_Model");
+                updateScene(i, "off_Orion_Model");
+                updateScene(i, "Orion_Model2");
+                updateScene(i, "off_Orion_Model2");
+                Update_History(i, Alpha)
+
+
+
+
+                if (Show_Original == true) {
+                    off_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    off_mini_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    mini_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    if (on_path == true) {
+
+                        if (i < G1) {
+                            connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                            mini_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            updateScene(i, "p1", 0);
+
+
+                            updateScene(i, "mini_p1", 0);
+                            ////console.log("Check1")
+                        }
+                        else if (i < G2) {
+                            connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                            mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            updateScene(i, "p2", G1);
+                            updateScene(i, "mini_p2", G1);
+                            updateScene(i, "p1", 0);
+
+
+                            updateScene(i, "mini_p1", 0);
+
+                        }
+                        else if (i < G3) {
+                            connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            updateScene(i, "p3", G2)
+                            updateScene(i, "mini_p3", G2);
+                            updateScene(i, "p2", G1);
+                            updateScene(i, "mini_p2", G1);
+                            updateScene(i, "p1", 0);
+
+
+                            updateScene(i, "mini_p1", 0);
+                        }
+                        else if (i < G4) {
+                            updateScene(i, "p4", G3);
+                            updateScene(i, "mini_p4", G3);
+                            updateScene(i, "p3", G2)
+                            updateScene(i, "mini_p3", G2);
+                            updateScene(i, "p2", G1);
+                            updateScene(i, "mini_p2", G1);
+                            updateScene(i, "p1", 0);
+
+
+                            updateScene(i, "mini_p1", 0);
+                            ////console.log("Check4")
+                        }
+
+                    }
+                    else {
+
+                        connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                        connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        mini_connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                        mini_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    }
+
+                    if (off_path == true) {
+
+                        if (i < G1) {
+                            off_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                            off_mini_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            updateScene(i, "off_p1", 0);
+
+
+                            updateScene(i, "off_mini_p1", 0);
+                            ////console.log("Check1")
+                        }
+                        else if (i < G2) {
+                            off_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                            off_mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            updateScene(i, "off_p2", G1);
+                            updateScene(i, "off_mini_p2", G1);
+                            updateScene(i, "off_p1", 0);
+
+
+                            updateScene(i, "off_mini_p1", 0);
+
+                        }
+                        else if (i < G3) {
+                            off_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                            off_mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                            updateScene(i, "off_p3", G2)
+                            updateScene(i, "off_mini_p3", G2);
+                            updateScene(i, "off_p2", G1);
+                            updateScene(i, "off_mini_p2", G1);
+                            updateScene(i, "off_p1", 0);
+
+
+                            updateScene(i, "off_mini_p1", 0);
+                        }
+                        else if (i < G4) {
+
+                            updateScene(i, "off_p4", G3);
+
+                            updateScene(i, "off_mini_p4", G3);
+                            updateScene(i, "off_p3", G2)
+                            updateScene(i, "off_mini_p3", G2);
+                            updateScene(i, "off_p2", G1);
+                            updateScene(i, "off_mini_p2", G1);
+                            updateScene(i, "off_p1", 0);
+
+
+                            updateScene(i, "off_mini_p1", 0);
+                            ////console.log("Check4")
+                        }
+
+                    }
+                    else {
+                        off_connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                        off_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_mini_connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                        off_mini_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    }
+
+
+                }
+                else {
+                    connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                    connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    mini_connectLine_p1.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                    mini_connectLine_p2.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    mini_connectLine_p3.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    mini_connectLine_p4.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                    if (on_path == true) {
+                        updateScene(i, "orion");
+                        updateScene(i, "orion2");
+
+                    }
+                    else {
+                        connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        mini_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                    }
+                    if (off_path == true) {
+                        updateScene(i, "off_orion");
+                        updateScene(i, "off_orion2");
+
+                    }
+                    else {
+                        off_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+                        off_mini_connectLine_Orion.geometry = new THREE.BufferGeometry().setFromPoints(pathPositions)
+
+                    }
+
+                }
+
+
+                // Rotate Earth
+                if (!isPaused) {
+                    earth.rotation.x - 0.01;
+                    earth.rotation.y += 0.01;
+                    moon.rotation.y += 0.01;
+
+                    mini_earth.rotation.x - 0.01;
+                    mini_earth.rotation.y += 0.01;
+                    mini_moon.rotation.y += 0.01;
+                }
+                //Lines 
+                // i += 1; // Increment index
+                //////console.log(moon.position.z)
+
+                // Renderer
+                // controls.update();
+                // controls2.update();
+                Update_History(i, Alpha)
+                mini_Map.render(scene2, camera2);
+                renderer.render(scene, camera);
+
+                //rizz6? checkpoint
+                if (key === 1) {
+                    updateOrionPov();
+                } else if (key === 2) {
+                    updateMoonPov();
+                } else if (key === 3) {
+                    updateCometPov();
+                }
+
+                controls.update();
+                mini_Map.render(scene2, camera2);
+                renderer.render(scene, camera);
+            }
+
+
+            animate();
+
+
+
+            // Resize renderer on window resize
+            window.addEventListener('resize', () => {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+            });
+
+            //#endregion ANIMATION
+
+            //#region CONTROLS
+            window.addEventListener('keydown', (event) => {
+                if (event.code === 'Space') {
+                    isPaused = !isPaused; // Toggle pause state
+                }
+            });
+
+            // new dropdown button
+            document.getElementById('speed_dropdown_select').addEventListener('change', (event) => {
+                //const SelectedSpeed = parseInt(event.target.value,10);
+                const SelectedSpeed = event.target.value
+                console.log(SelectedSpeed)
+                speedFactor = SelectedSpeed;
+
+                // updaye downdrops text (hopfully) :(
+                if (speedFactor == 1) {
+                    document.getElementById('speed_dropdown_select').style.backgroundColor = "#000"
+                } else {
+                    document.getElementById('speed_dropdown_select').style.backgroundColor = "#000"
+                }
+
+
+            });
+
+        }
+        //#endregion CONTROLS
+
+        window.onload = () => {
+            Load_Scene()
+        }
+
+        //HTML CONTENT BELOW
+    </script>
+
+    <div id="slider-container">
+        <input type="range" id="Animation-slider" min="0" max="1000" step="1" value="0">
+        <button id="pause" class="action-button">Play/Pause</button>
+        <button id="+" class="action-button">+</button><button class="action-button" id="-">-</button><button class="action-button" id="c">👁️</button>
+        </button>
+
+
+
+        <div id="speed_dropdown">
+            <label for="speed_dropdown_select"></label>
+            <select id="speed_dropdown_select">
+                <option value=0.1>1x</option>
+                <option value=1>10x</option>
+                <option value=10>100x</option>
+            </select>
+        </div>
+    </div>
+
+
+
+    <div id="on-ant-display" class="display-pop">
+        <div class="display-title">Nominal Track</div>
+
+
+        <table>
+
+            <tr>
+                <td class="go-right"><strong>Mission Time:</strong><br><span style="font-size: 8pt">(DD:HH:MM:SS)</span>
+                </td>
+                <td>
+                    <span class="Time">
+                </td>
+            </tr>
+            <tr>
+                <td class="go-right"><strong>Velocity</strong>:</td>
+                <td>
+                    <span id="velocity-display"></span> km/s
+                </td>
+            </tr>
+
+            <tr>
+                <td class="go-right"><strong>Travel distance:</strong></td>
+                <td>
+                    <span id="distance-travelled"></span> km
+                </td>
+            </tr>
+
+
+            <tr id="DS54-on-mission">
+                <td class="go-right"><strong>Antenna DS54:</strong></td>
+                <td>
+                    <span class="DS54"></span>
+                </td>
+            </tr>
+
+            <tr id="DS34-on-mission">
+                <td class="go-right"><strong>Antenna DS34:</strong></td>
+                <td>
+                    <span class="DS34"></span>
+                </td>
+            </tr>
+
+            <tr id="DS24-on-mission">
+                <td class="go-right"><strong>Antenna DS24:</strong></td>
+                <td>
+                    <span class="DS24"></span>
+                </td>
+            </tr>
+            <tr id="WPSA-on-mission">
+                <td class="go-right"><strong>Antenna WPSA:</strong></td>
+                <td>
+                    <span class="WPSA"></span>
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="smaller-desc">
+            <p><strong>Antenna Prioritization</strong></p>
+            <p>The calculated baud rate (kbps) is displayed next to available antennas. The antenna with the highest
+                baud rate is chosen for communication. Antennas can be in one of three states:
+            <p><strong class="antenna-off">Antenna NOT Available</strong>
+                <br><strong class="antenna-on">Antenna Available</strong>
+                <br><strong class="antenna-chosen">Chosen Antenna </strong>
+            </p>
+            </p>
+        </div>
+    </div>
+
+    <!-- <link rel="icon" href="drawing.png"> -->
+
+
+
+    <div id="container">
+        <div id="display-menu-container">
+            <ul id="display-menu">
+                <li><strong>Display toggle:</strong></li>
+                <li>On Nominal path <input type="checkbox" id="check-on-path"></li>
+                <li>Off Nominal path<input type="checkbox" id="check-off-path"></li>
+                <li>Status<input type="checkbox" id="check-status"></li>
+                <li>Mini Map<input type="checkbox" id="mini_Scre"></li>
+                <li>Instructions<input type="checkbox" id="Info_screen"></li>
+            </ul>
+            <img id="logo" src="./Images/nasa-logo.png">
+        </div>
+    </div>
+
+    <div id="off-ant-display" class="display-pop">
+        <div class="display-title">OFF Nominal Track</div>
+        <table>
+            <!-- fix to of nominal Velocity later  -->
+            <tr>
+                <td class="go-right"><strong>Mission Time</strong>:<br><span style="font-size: 8pt">(DD:HH:MM:SS)</span>
+                </td>
+                <td>
+                    <span class="Time"></span>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="go-right"><strong>Velocity</strong>:</td>
+                <td>
+                    <span id="velocity-display2"></span> Km/s
+                </td>
+            </tr>
+
+            <tr>
+                <td class="go-right"><strong>Distance travelled:</strong></td>
+                <td>
+                    <span id="off_distance-travelled"></span>km
+                </td>
+            </tr>
+
+            <tr id="DS54-on-mission2">
+                <td class="go-right"><strong>Antenna DS54:</strong></td>
+                <td>
+                    <span class="DS54"></span>
+                </td>
+            </tr>
+
+            <tr id="DS34-on-mission2">
+                <td class="go-right"><strong>Antenna DS34:</strong></td>
+                <td>
+                    <span class="DS34"></span>
+                </td>
+            </tr>
+
+            <tr id="DS24-on-mission2">
+                <td class="go-right"><strong>Antenna DS24:</strong></td>
+                <td>
+                    <span class="DS24"></span>
+                </td>
+            </tr>
+            <tr id="WPSA-on-mission2">
+                <td class="go-right"><strong>Antenna WPSA:</strong></td>
+                <td>
+                    <span class="WPSA"></span>
+                </td>
+            </tr>
+
+            <!-- <tr>
+                    <td>Best Satellite:</td>
+                    <td>
+                        <span class="best"></span>
+                    </td>
+                </tr> -->
+
+
+
+        </table>
+
+        <div class="smaller-desc">
+            <p><strong>Antenna Prioritization</strong></p>
+            <p>The calculated baud rate (kbps) is displayed next to available antennas. The antenna with the highest
+                baud rate is chosen for communication. Antennas can be in one of three states:
+            <p><strong class="antenna-off">Antenna NOT Available</strong>
+                <br><strong class="antenna-on">Antenna Available</strong>
+                <br><strong class="antenna-chosen">Chosen Antenna </strong>
+            </p>
+            </p>
+        </div>
+    </div>
+
+    </div>
+
+    <div id="on-Status-Display" class="display-pop">
+        <div class="display-title">Mission Status</div>
+        <p><strong>Mission Phase:</strong> <span id="mission_phase_print"></span></p>
+        <p><strong>Description: </strong><span id="phase_paragraph"></span> </p>
+
+
+
+        <div id="stage-1">
+            <img class="status-img" src="Images\start phase 2.png">
+        </div>
+
+        <div id="stage-2">
+            <img class="status-img" src="Images\mid phase 2.png">
+        </div>
+
+        <div id="stage-3">
+            <img class="status-img" src="Images\end phase 2.png">
+        </div>
+
+
+    </div>
+    </div>
+
+    <div id="Info_screen-Display" class="display-pop">
+        <div class="display-title">Visualization Controls</div>
+        <table>
+            <ul id="viz">
+                <li><strong>Menu visibility</strong> - Toggle menus off/on with the checkboxes.</li>
+                <li><strong>Move menus</strong> - Click down on a menu and drag it.</li>
+                <li><strong>Pause/play</strong> - Tap the space bar or use the play/pause buttons.</li>
+                <li><strong>Playback speed</strong> - Speed up or slow down speed from 1x to 100x.</li>
+                <li><strong>Jump to time</strong> - Drag on the scrollbar to jump to any part of the mission.</li>
+                <li><strong>Zoom in/out</strong> - Use the +/- buttons, mouse scroll wheel, or pinch/expand on your
+                    mousepad.</li>
+                <li><strong>Camera tracker</strong> - Hit the "👁️" button to toggle the centering of the camera between (a)
+                    the orbit path (b) Earth (c) Irion.</li>
+                <li><strong>Viewing perspective</strong> - Click and drag on the screen to change the view perspective.
+                    
+                </li>
+                
+            </ul>
+
+
+
+
+        </table>
+    </div>
+
+
+
+    <div id="mini-map"></div>
+</body>
+
+
+
+</html>
