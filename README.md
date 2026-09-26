@@ -40,12 +40,6 @@ JavaScript, Three.js, WebGL, HTML, and CSS.
 
 Earlier HTML versions are also included in this repository.
 
-## Repository status
-
-The live demo differs slightly from the version stored here. The repository currently contains capitalization mismatches in some asset paths that need to be corrected for case-sensitive hosting.
-
-The antenna calculation code also contains a known assignment bug in `if (link1 = -1)` that needs correction. Communication estimates should be treated as project outputs, not validated operational results.
-
 ## Credits
 
 Developed collaboratively for the NASA App Development Challenge. Third-party model attribution and license information are included in the relevant model folders.
